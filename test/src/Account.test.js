@@ -13,67 +13,53 @@
 
 import _ from 'underscore';
 import account from '../../src/classes/Account';
-import api from '../../src/utils/api';
+import globals from '../../src/classes/Globals';
+const { AUTH_SERVER } = globals;
 
-jest.mock(api);
+jest.mock('../../src/utils/api');
+
+beforeEach(() => {
+	fetch.resetMocks();
+});
 
 describe('src/classes/Account.js', () => {
 	describe('testing login()', () => {
-		// Test if undefined
-		// Test if has 2 parameters
-		// Test if returns a promise
-		// Mock fetch with some correct data (any validation should be done in the API)
-		// Don't test the api call, that's an integration test
-		// Mock the API response
 		test('login() is not undefined', () => {
 			expect(account.login).toBeDefined();
 		});
-		test('login() returns 400 OK', () => {
-			const email = window.encodeURIComponent('ben.ghostery+85@gmail.com');
-			const password = window.encodeURIComponent('ghostery');
-			const mockData = `email=${email}&password=${password}`;
-			const mockRequest = {
-				method: 'POST',
-				body: mockData,
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'Content-Length': Buffer.byteLength(mockData),
-				},
-				credentials: 'include',
-			};
-			expect(true).toBe(true);
+
+		test('login() success', async () => {
+			const email = 'ben.ghostery+85@gmail.com';
+			const password = 'ghostery';
+			fetch.mockResponseOnce(
+				JSON.stringify({ response: {} }, { status: 200 })
+			);
+			const response = await account.login(email, password);
+			expect(response).toEqual({});
+			expect(fetch.mock.calls.length).toEqual(1);
 		});
-		// test('login has 2 parameters', () => {
-		// 	expect(account.login).toHaveBeenCalledWith(
-		// 		expect(any(String))
-		// 	);
-		// });
+
+		test('login() fail', async () => {
+			const email = 'ben.ghostery+85@gmail.com';
+			const password = 'fakepassword';
+			fetch.mockRejectOnce(
+				JSON.stringify(
+					{
+						response: {
+							status: 401
+						}
+					})
+			);
+			const response = await account.login(email, password)
+				.then(() => resolve())
+				.catch(error => {
+					expect(error).toEqual(JSON.stringify({
+						response: {
+							status: 401
+						}
+					}));
+				})
+			expect(fetch.mock.calls.length).toEqual(1);
+		});
 	})
-	// Think Fatal
-	// This function has an input/output
-	// test('pre-initialization api config is set--maybe test if api is inited with opts?', () => {});
-	// test('register method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('logout method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('getUser method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('getUserSettings method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('getUserSubscriptionData method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('saveUserSettings method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('getTheme method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('sendValidateAccountEmail method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('resetPassword method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('hasScopesUnverified method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('migrate method is called with correct params and is not undefined and returns a promise', () => {});
-	// // Should i be testing private functions?
-	// test('_setLoginCookie method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_getUserID method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_getUserIDIfEmailIsValidated method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_setAccountInfo method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_setAccountUserInfo method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_setAccountUserSettings method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_setSubscriptionData method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_setThemeData method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_clearAccountInfo method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_getUserIDFromCookie method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_setConfUserSettings method is called with correct params and is not undefined and returns a promise', () => {});
-	// test('_removeCookies method is called with correct params and is not undefined and returns a promise', () => {});
 });

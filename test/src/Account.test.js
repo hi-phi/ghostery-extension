@@ -118,7 +118,6 @@ describe('src/classes/Account.js', () => {
 
 		test('logout() success', async () => {
 			fetch.mockResponseOnce(
-				// JSON.stringify({ response: undefined }, { status: 200 });
 				JSON.stringify({"_id": 1, "_label": undefined, "_result": undefined, "_state": undefined, "_subscribers": []})
 			);
 			const response = account.logout();
@@ -147,6 +146,124 @@ describe('src/classes/Account.js', () => {
 			expect(fetch.mock.calls.length).toEqual(0);
 		});
 	})
+
+	/// help
+	describe('testing getUser() success', () => {
+		xtest('getUser() is not undefined', () => {
+			expect(account.getUser).toBeDefined();
+		});
+
+		xtest('getUser() success with a free account', async () => {
+			fetch.mockResponseOnce(
+				JSON.stringify({
+					_id: 'd7999be5-210b-44f1-855d-3cf00ff579db',
+					email: 'ben.ghostery+85@gmail.com',
+					emailValidated: true,
+					firstName: 'fsdg',
+					lastName: 'fdsf',
+					scopes: null,
+					stripeAccountId: '',
+					stripeCustomerId: '',
+				})
+			);
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			const response = await account.getUser();
+			expect(response).toEqual(
+				{
+					_id: 'd7999be5-210b-44f1-855d-3cf00ff579db',
+					email: 'ben.ghostery+85@gmail.com',
+					emailValidated: true,
+					firstName: 'fsdg',
+					lastName: 'fdsf',
+					scopes: null,
+					stripeAccountId: '',
+					stripeCustomerId: '',
+				}
+			);
+			expect(fetch.mock.calls.length).toEqual(0);
+		});
+
+		xtest('getUser() fail', () => {
+			fetch.mockRejectOnce(
+				JSON.stringify(
+					{
+						response: {
+							status: 401
+						}
+					})
+			);
+			const response = account.getUser()
+				.then(() => resolve())
+				.catch(error => {
+					expect(error).toEqual(JSON.stringify({
+						response: {
+							status: 401
+						}
+					}));
+				})
+			expect(fetch.mock.calls.length).toEqual(0);
+		});
+	})
+
+	describe('testing getUserSettings() success', () => {
+		test('getUserSettings() is not undefined', () => {
+			expect(account.getUserSettings).toBeDefined();
+		});
+
+		test('getUserSettings() success with a free account', async () => {
+			fetch.mockResponseOnce(
+				JSON.stringify({
+					_id: 'd7999be5-210b-44f1-855d-3cf00ff579db',
+					email: 'ben.ghostery+85@gmail.com',
+					emailValidated: true,
+					firstName: 'fsdg',
+					lastName: 'fdsf',
+					scopes: null,
+					stripeAccountId: '',
+					stripeCustomerId: '',
+				})
+			);
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			const response = await account.getUserSettings();
+			expect(response).toEqual(
+				{
+					_id: 'd7999be5-210b-44f1-855d-3cf00ff579db',
+					email: 'ben.ghostery+85@gmail.com',
+					emailValidated: true,
+					firstName: 'fsdg',
+					lastName: 'fdsf',
+					scopes: null,
+					stripeAccountId: '',
+					stripeCustomerId: '',
+				}
+			);
+			expect(fetch.mock.calls.length).toEqual(0);
+		});
+
+		test('getUserSettings() fail', () => {
+			fetch.mockRejectOnce(
+				JSON.stringify(
+					{
+						response: {
+							status: 401
+						}
+					})
+			);
+			const response = account.getUserSettings()
+				.then(() => resolve())
+				.catch(error => {
+					expect(error).toEqual(JSON.stringify({
+						response: {
+							status: 401
+						}
+					}));
+				})
+			expect(fetch.mock.calls.length).toEqual(0);
+		});
+	})
+
 
 	// Think Fatal
 	// This function has an input/output

@@ -153,35 +153,47 @@ describe('src/classes/Account.js', () => {
 			expect(account.getUser).toBeDefined();
 		});
 
-		xtest('getUser() success with a free account', async () => {
-			fetch.mockResponseOnce(
-				JSON.stringify({
-					_id: 'd7999be5-210b-44f1-855d-3cf00ff579db',
-					email: 'ben.ghostery+85@gmail.com',
-					emailValidated: true,
+		// get user object back
+
+		// so have a user object as a response and compare again the expected result
+		// mock the account file as well since we are mocking the
+
+
+
+		// mock the account file and then make the call to the getUser() func
+
+		/** Test Plan -> the object of the test is to get the response of the getUser() method
+			and compare against the data const that we have set. They should be equal
+			*  first we create a data const that will contain the expected obj result
+			*  mock the account file -> but only inside of this function so it does not affect the other tests
+			*  set the userID like you were doing
+			*  call the getUser()
+			*  and the response should equal the data const
+		**/
+
+
+
+		test('getUser() success with a free account', async () => {
+			const data = {
+				_id: 'd7999be5-210b-44f1-855d-3cf00ff579db',
+				email: 'ben.ghostery+85@gmail.com',
+				emailValidated: true,
 					firstName: 'fsdg',
 					lastName: 'fdsf',
 					scopes: null,
 					stripeAccountId: '',
 					stripeCustomerId: '',
-				})
-			);
+			};
+
+
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
+
 			const response = await account.getUser();
-			expect(response).toEqual(
-				{
-					_id: 'd7999be5-210b-44f1-855d-3cf00ff579db',
-					email: 'ben.ghostery+85@gmail.com',
-					emailValidated: true,
-					firstName: 'fsdg',
-					lastName: 'fdsf',
-					scopes: null,
-					stripeAccountId: '',
-					stripeCustomerId: '',
-				}
-			);
-			expect(fetch.mock.calls.length).toEqual(0);
+
+
+			expect(response).toEqual(data);
+			//expect(fetch.mock.calls.length).toEqual(1);
 		});
 
 		xtest('getUser() fail', () => {

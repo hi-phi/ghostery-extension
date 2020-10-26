@@ -11,17 +11,30 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0
  */
 
+import { mockGet, mockInit } from '../../src/utils/__mocks__/api';
+
+// let mockGet = jest.fn();
+// let mockInit = jest.fn();
+
 import _ from 'underscore';
 import account from '../../src/classes/Account';
 import globals from '../../src/classes/Globals';
 import api from '../../src/utils/api';
-import { mock, mockGet, mockInit } from '../../src/utils/__mocks__/api';
 
-jest.mock('../../src/utils/api');
+
+jest.mock('../../src/utils/api', () => {
+	return jest.fn().mockImplementation(() => { // Works and lets you check for constructor calls
+		return {
+			get: mockGet,
+			init: mockInit
+		};
+	});
+});
 
 beforeEach(() => {
 	fetch.resetMocks();
 	api.mockClear();
+	// api.get.mockClear();
 });
 
 describe('src/classes/Account.js', () => {
@@ -183,12 +196,12 @@ describe('src/classes/Account.js', () => {
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
 			api.get = mockGet;
-			// account.getUser().then(() => {
-			// 	expect(api.get).toHaveBeenCalledWith('users', 5);
-			// });
-			account.getUser().then(() => {
-				expect(api.get.mock.calls.length).toBe(2);
-			})
+			mockGet.mockReturnValue({
+				data: { id: 42 }
+			});
+			await account.getUser();
+			expect(mockGet.mock.calls.length).toBe(1);
+
 		});
 
 		test('getUser should take whatever the api call returns and then do xyz with it', async () => {

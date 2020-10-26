@@ -20,7 +20,9 @@ import _ from 'underscore';
 import account from '../../src/classes/Account';
 import globals from '../../src/classes/Globals';
 import api from '../../src/utils/api';
-
+import conf from '../../src/classes/Conf';
+import build from 'redux-object';
+import normalize from 'json-api-normalizer';
 
 jest.mock('../../src/utils/api', () => {
 	return jest.fn().mockImplementation(() => { // Works and lets you check for constructor calls
@@ -187,9 +189,8 @@ describe('src/classes/Account.js', () => {
 		test('getUser should use the userID that\'s on the account class', async () => {
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
-			account._getUserID().then((response) => {
-				expect(response).toEqual(userID);
-			});
+			const response = await account._getUserID();
+			expect(response).toEqual(userID);
 		});
 
 		test('getUser should make the api call with that ID', async () => {
@@ -201,51 +202,63 @@ describe('src/classes/Account.js', () => {
 			});
 			await account.getUser();
 			expect(mockGet.mock.calls.length).toBe(1);
-
+			expect(mockGet.mock.calls[0][0]).toBe('users');
+			expect(mockGet.mock.calls[0][1]).toBe(userID);
 		});
 
-		test('getUser should take whatever the api call returns and then do xyz with it', async () => {
-
+		test('getUser should take whatever the api call returns and set the conf object account user info', async () => {
+			const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
+			account._setAccountInfo(userID);
+			api.get = mockGet;
+			mockGet.mockReturnValue({
+				data:  {
+					attributes: {
+						email: "ben.ghostery+100@gmail.com",
+						emailValidated: false,
+						firstName: "leury",
+						id: userID,
+						lastName: "rodriguez",
+						scopes: null,
+						stripeAccountId: "",
+						stripeCustomerId: "",
+						resolved: true
+					},
+					id: userID,
+					type: 'users'
+				}
+			});
+			const response = await account.getUser();
+			expect(conf.account.user).toStrictEqual({
+				email: "ben.ghostery+100@gmail.com",
+				emailValidated: false,
+				firstName: "leury",
+				id: userID,
+				lastName: "rodriguez",
+				scopes: null,
+				stripeAccountId: "",
+				stripeCustomerId: "",
+				resolved: true
+			});
+			expect(response).toStrictEqual({
+				email: "ben.ghostery+100@gmail.com",
+				emailValidated: false,
+				firstName: "leury",
+				id: userID,
+				lastName: "rodriguez",
+				scopes: null,
+				stripeAccountId: "",
+				stripeCustomerId: "",
+				resolved: true
+			});
 		});
 
-		// xtest('getUser() success with a free account', async () => {
-		// 	const data = {
-		// 		_id: 'd7999be5-210b-44f1-855d-3cf00ff579db',
-		// 		email: 'ben.ghostery+85@gmail.com',
-		// 		emailValidated: true,
-		// 			firstName: 'fsdg',
-		// 			lastName: 'fdsf',
-		// 			scopes: null,
-		// 			stripeAccountId: '',
-		// 			stripeCustomerId: '',
-		// 	};
-
-		// 	const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
-		// 	account._setAccountInfo(userID);
-		// 	const response = await account.getUser();
-
-		// 	expect(response).toEqual(data);
-		// });
-
-		xtest('getUser() fail', () => {
-			fetch.mockRejectOnce(
-				JSON.stringify(
-					{
-						response: {
-							status: 401
-						}
-					})
-			);
-			const response = account.getUser()
-				.then(() => resolve())
-				.catch(error => {
-					expect(error).toEqual(JSON.stringify({
-						response: {
-							status: 401
-						}
-					}));
-				})
-			expect(fetch.mock.calls.length).toEqual(0);
+		test('getUser() fail', async () => {
+			const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
+			account._setAccountInfo(userID);
+			api.get = mockGet;
+			mockGet.mockRejectedValue();
+			const response = await account.getUser();
+			expect(response).toBe(null);
 		});
 	})
 

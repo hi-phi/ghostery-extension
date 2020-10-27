@@ -315,7 +315,43 @@ describe('src/classes/Account.js', () => {
 				status: 'active'
 			});
 		});
-
 		test('getUserSubscriptionData() should send a metrics ping', async () => {});
+	})
+
+	describe('testing saveUserSettings()', () => {
+		test('saveUserSettings() is not undefined', () => {
+			expect(account.saveUserSettings).toBeDefined();
+		});
+
+		xtest('saveUserSettings() should make the api call with that ID', async () => {
+			const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
+			account._setAccountInfo(userID);
+			api.get = mockGet;
+			mockGet.mockReturnValue({
+				"data": { "type": "customers", "id": "cus_HGV3vb8TGCNvDT", "attributes": { "description": "", "metadata": { "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" }, "publishable_key": "pk_test_bLcnZQXwEIROFvV9q4Hf2zqQ", "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" }, "relationships": { "cards": { "data": [{ "type": "cards", "id": "card_1HSnKUJBAQgtd33Oy8Xl29AP" }] }, "subscriptions": { "data": [{ "type": "subscriptions", "id": "sub_I2t6J2UypiR4j9" }, { "type": "subscriptions", "id": "sub_HGV3RgLhq9OSyy" }] } } }, "included": [{ "type": "cards", "id": "card_1HSnKUJBAQgtd33Oy8Xl29AP", "attributes": { "address_city": "New York", "address_country": "CA", "address_line1": "49 W 23rd Street", "address_state": "Nova Scotia", "address_zip": "10010", "brand": "Visa", "exp_month": 4, "exp_year": 2024, "last4": "4242", "name": "leury rodriguez", "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" } }, { "type": "subscriptions", "id": "sub_I2t6J2UypiR4j9", "attributes": { "cancel_at_period_end": false, "created": 1600449911, "current_period_end": 1605720311, "current_period_start": 1603041911, "plan_amount": 5900, "plan_currency": "cad", "plan_id": "plan_insights_month_5900_cad", "plan_interval": "month", "plan_name": "Insights for 59.00 CAD / month", "product_id": "prod_insights", "product_name": "Ghostery Insights Beta", "status": "active" } }, { "type": "subscriptions", "id": "sub_HGV3RgLhq9OSyy", "attributes": { "cancel_at_period_end": false, "created": 1589289696, "current_period_end": 1605187296, "current_period_start": 1602508896, "plan_amount": 1800, "plan_currency": "cad", "plan_id": "plan_premium_month_1800_cad", "plan_interval": "month", "plan_name": "Premium for 18.00 CAD / month", "product_id": "prod_premium", "product_name": "Ghostery Premium", "status": "active" } }]
+			})
+			const response = await account.saveUserSettings();
+			// Blocked by EmailValidated
+		});
+	})
+
+	describe('testing getTheme()', () => {
+		test('getTheme() is not undefined', () => {
+			expect(account.getTheme).toBeDefined();
+		});
+
+		test('getUser should use the userID that\'s on the account class', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			const response = await account._getUserID();
+			expect(response).toEqual(userID);
+		});
+
+		test('getUser should use the userID that\'s on the account class', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			const response = await account._getUserID();
+			expect(response).toEqual(userID);
+		});
 	})
 });

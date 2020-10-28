@@ -433,4 +433,52 @@ describe('src/classes/Account.js', () => {
 		})
 	})
 
+
+	describe('testing resetPassword()', () => {
+		test('resetPassword() is not undefined', () => {
+			expect(account.resetPassword).toBeDefined();
+		});
+
+		test('resetPassword should call fetch with some data', async () => {
+			const email = 'ben.ghostery+100@gmail.com';
+			account.resetPassword(email);
+			fetch.mockResolvedValue(
+				{
+					status: 400,
+					response: 'test'
+				}
+			)
+			expect(fetch.mock.calls.length).toEqual(1);
+		});
+
+		test('resetPassword should return a an empty object if it is successful', async () => {
+			const email = 'ben.ghostery+100@gmail.com';
+			const response = await account.resetPassword(email);
+			fetch.mockResponseOnce(
+				{
+					status: 200,
+					response: 'test'
+				}
+			)
+			expect(response).toEqual({});
+		});
+
+		test('resetPassword should return a JSONified object if it is unsuccessful', async () => {
+			const email = 'ben.ghostery+100@gmail.com';
+			const response = await account.resetPassword(email);
+			console.log('response: ', response);
+			fetch.mockResponseOnce(
+				{
+					status: 500,
+					response: 'test'
+				}
+			)
+			expect(response).toMatchObject(
+				{
+					status: 500,
+					response: 'test'
+				}
+			);
+		});
+	})
 });

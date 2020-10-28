@@ -347,11 +347,50 @@ describe('src/classes/Account.js', () => {
 			expect(response).toEqual(userID);
 		});
 
-		test('getUser should use the userID that\'s on the account class', async () => {
+		test('getUser should return a css file if the account has themeData and 24 hours has not passed', async () => {
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
-			const response = await account._getUserID();
-			expect(response).toEqual(userID);
+			account._setThemeData({
+				name: 'leaf',
+				css: 'leaf.css'
+			});
+			const response = await account.getTheme('leaf');
+			expect(response).toBe('leaf.css');
+		});
+
+		test('getUser should return call the api with the correct parameters if the account does not have themeData or 24 hours have passed', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID); // Sets conf.account.themeData to null
+			api.get = mockGet;
+			mockGet.mockResolvedValue({
+				data: {
+					attributes: {
+						css: 'css'
+					},
+					id: 'leaf-theme.css',
+					type: 'themes'
+				}
+			});
+			const response = await account.getTheme('leaf');
+			expect(mockGet.mock.calls[0][0]).toBe('themes');
+			expect(mockGet.mock.calls[0][1]).toBe('leaf.css');
+		});
+
+		test('getUser should set the theme data if the account does not have themeData or 24 hours have passed', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID); // Sets conf.account.themeData to null
+			api.get = mockGet;
+			mockGet.mockResolvedValue({
+				data: {
+					attributes: {
+						css: 'css'
+					},
+					id: 'leaf-theme.css',
+					type: 'themes'
+				}
+			});
+			const response = await account.getTheme('leaf');
+			expect(conf.account.themeData).toBeDefined();
 		});
 	})
 });

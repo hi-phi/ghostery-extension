@@ -393,4 +393,44 @@ describe('src/classes/Account.js', () => {
 			expect(conf.account.themeData).toBeDefined();
 		});
 	})
+
+	describe('testing sendValidateAccountEmail()', () => {
+		test('sendValidateAccountEmail() is not undefined', () => {
+			expect(account.sendValidateAccountEmail).toBeDefined();
+		});
+
+		test('sendValidateAccountEmail should use the userID that\'s on the account class', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			const response = await account._getUserID();
+			expect(response).toEqual(userID);
+		});
+
+		test('sendValidateAccountEmail should call fetch and return true if the status is less than 400', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			fetch.mockResolvedValue(
+				{
+					status: 200,
+				}
+			);
+			const response = await account.sendValidateAccountEmail();
+			expect(fetch.mock.calls.length).toEqual(1);
+			expect(response).toBe(true);
+		})
+
+		test('sendValidateAccountEmail should call fetch and return false if the status is greater than 400', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			fetch.mockResolvedValue(
+				{
+					status: 400,
+				}
+			);
+			const response = await account.sendValidateAccountEmail();
+			expect(fetch.mock.calls.length).toEqual(1);
+			expect(response).toBe(false);
+		})
+	})
+
 });

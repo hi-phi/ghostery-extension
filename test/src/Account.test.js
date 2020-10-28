@@ -392,5 +392,14 @@ describe('src/classes/Account.js', () => {
 			const response = await account.getTheme('leaf');
 			expect(conf.account.themeData).toBeDefined();
 		});
+
+		describe('testing sendValidateAccountEmail()', () => {
+			test('sendValidateAccountEmail should use the userID that\'s on the account class', async () => {
+				const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+				account._setAccountInfo(userID);
+				const response = await account._getUserID();
+				expect(response).toEqual(userID);
+			});
+		});
 	})
 });

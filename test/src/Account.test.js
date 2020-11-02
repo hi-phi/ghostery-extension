@@ -45,7 +45,7 @@ describe('src/classes/Account.js', () => {
 			const email = 'ben.ghostery+85@gmail.com';
 			const password = 'fakepassword';
 			fetch.mockResponseOnce(
-				JSON.stringify({ response: {} }, { status: 200 })
+				JSON.stringify({ status: 200 })
 			);
 			try {
 				const response = await account.login(email, password);
@@ -459,7 +459,6 @@ describe('src/classes/Account.js', () => {
 		xtest('resetPassword should return a JSONified object if it is unsuccessful', async () => {
 			const email = 'ben.ghostery+100@gmail.com';
 			const response = await account.resetPassword(email);
-			console.log('response: ', response);
 			fetch.mockResponseOnce(
 				{
 					status: 500,

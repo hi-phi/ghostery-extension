@@ -577,19 +577,30 @@ describe('src/classes/Account.js', () => {
 	})
 
 	describe('testing _getUserIDIfEmailIsValidated()', () => {
+		const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
+		const user = {
+			userID,
+			email: "ben.ghostery+100@gmail.com",
+			emailValidated: true,
+			firstName: "leury",
+			lastName: "rodriguez",
+			scopes: null,
+			stripeAccountId: "",
+			stripeCustomerId: "",
+			resolved: true
+		};
+
 		test('getUserIDIfEmailIsvalidated should use the userID that\'s on the account class', async () => {
-			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
-			account._setAccountInfo(userID);
+			account._setAccountUserInfo(user);
 			try {
-				const response = await account._getUserID();
-				expect(response).toEqual(userID);
+				const response = await account._getUserIDIfEmailIsValidated();
 			} catch (err) {}
 		});
 
-		test('getUserIDIfEmailIsvalidated should return an error if the email is not validated', async () => {
+		test('getUserIDIfEmailIsValidated should return an error if the email is not validated', async () => {
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
-			await expect(account._getUserIDIfEmailIsValidated()).rejects.toThrow('One or more required values missing:');
+			const response = await account._getUserIDIfEmailIsValidated();
 		});
 	});
 

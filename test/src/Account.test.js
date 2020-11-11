@@ -12,17 +12,31 @@
  */
 
 import { mockGet, mockInit } from '../../src/utils/__mocks__/api';
+import { mockTrigger } from '../../src/utils/__mocks__/dispatcher';
 
 import _ from 'underscore';
 import account from '../../src/classes/Account';
 import globals from '../../src/classes/Globals';
 import api from '../../src/utils/api';
+import dispatcher from '../../src/classes/Dispatcher';
 import conf from '../../src/classes/Conf';
-import { local } from 'd3';
 import RSVP from 'rsvp';
 
+const mockCookieGet = jest.fn();
+const mockCookieSet = jest.fn();
+const mockCookieRemove = jest.fn();
+
+// Global chrome object to mock chrome.cookies.set and chrome.cookies.get
+global.chrome = {
+   cookies: {
+	   set: mockCookieGet,
+	   get: mockCookieSet,
+	   remove: mockCookieRemove,
+   }
+};
+
 jest.mock('../../src/utils/api', () => {
-	return jest.fn().mockImplementation(() => { // Works and lets you check for constructor calls
+	return jest.fn().mockImplementation(() => {
 		return {
 			get: mockGet,
 			init: mockInit
@@ -34,6 +48,7 @@ beforeEach(() => {
 	fetch.resetMocks();
 	api.mockClear()
 	mockGet.mockClear();
+	mockTrigger.mockReset();
 });
 
 describe('src/classes/Account.js', () => {
@@ -124,7 +139,6 @@ describe('src/classes/Account.js', () => {
 		xtest('logout() success', async () => {
 			var promise = new RSVP.Promise(account.logout);
 			promise.then(function (d) {
-				console.log('d', d);
 				const expectedResponse = { "_id": 1, "_label": undefined, "_result": undefined, "_state": undefined, "_subscribers": [], "status": 200 };
 				fetch.mockResponseOnce(
 					JSON.stringify(expectedResponse)
@@ -534,4 +548,258 @@ describe('src/classes/Account.js', () => {
 			expect(result).toBe(false);
 		});
 	})
+
+	describe('testing buildUserSettings()', () => {
+		test('buildUserSettings() is not undefined', () => {
+			expect(account.buildUserSettings).toBeDefined();
+		});
+
+		test('the buildUserSettings() object should contain all of the keys from the SYNC_SET', () => {
+			const { SYNC_ARRAY } = globals;
+			const SYNC_SET = new Set(SYNC_ARRAY);
+			const settings = account.buildUserSettings();
+			let hasAllKeys = true;
+			for (const key in SYNC_SET) {
+				if (key === 'reload_banner_status'
+					|| key === 'trackers_banner_status'
+					|| key in settings)
+					hasAllKeys = false;
+			}
+			expect(hasAllKeys).toBe(true);
+		});
+	})
+
+	// describe('testing setLoginCookie()', () => {
+	// 	test('setLoginCookie() is not undefined', () => {
+	// 		expect(account._setLoginCookie()).toBeDefined();
+	// 	});
+
+	// 	test('setLoginCookie() should error if it is called without a name or value detail object', async () => {
+	// 		await expect(account._setLoginCookie({ name: 'test', value: '', expirationDate: 'test', httpOnly: true})).rejects.toThrow('One or more required values missing:');
+	// 		await expect(account._setLoginCookie({ name: '', value: 'test', expirationDate: 'test', httpOnly: true})).rejects.toThrow('One or more required values missing:');
+	// 	});
+
+	// 	test('setLoginCookie() ', async () => {
+	// 		const details = {
+	// 			name: 'cookie',
+	// 			value: 'test',
+	// 			expirationDate: '2020-11-6',
+	// 			httpOnly: false
+	// 		};
+	// 		if (typeof details !== undefined) {
+	// 			const cookie = await account._setLoginCookie(details);
+	// 			console.log(cookie);
+	// 		}
+	// 	});
+	// })
+
+
+	// describe('testing _getUserID()', () => {
+	// 	test('_getUserID() is not undefined', () => {
+	// 		expect(account._getUserID()).toBeDefined();
+	// 	});
+
+	// 	test('getUserID should use the userID that\'s on the account class', async () => {
+	// 		const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+	// 		account._setAccountInfo(userID);
+	// 		const response = await account._getUserID();
+	// 		expect(response).toEqual(userID);
+	// 	});
+
+	// 	test('getUserID should set the account info from the cookie if conf.account is null', async () => {
+	// 		conf.account = null;
+	// 		const details = {
+	// 			name: 'cookie',
+	// 			value: 'test',
+	// 			expirationDate: '2020-11-6',
+	// 			httpOnly: false
+	// 		};
+	// 		try {
+	// 			await account._setLoginCookie(details);
+	// 		} catch (err) {}
+
+	// 		try {
+	// 			const response = await account._getUserID();
+	// 		} catch (err) {
+	// 			console.log(err);
+	// 			expect(err).toBe(true);
+	// 		}
+	// 		// account._setAccountInfo(''); // Clear account info from previous test
+	// 		// await expect(account._getUserID()).rejects.toThrow('_getUserID() Not logged in');
+	// 	});
+	// })
+
+	describe('testing _getUserIDIfEmailIsValidated()', () => {
+		xtest('testing ', () => {
+			expect(true).toBe(true);
+		});
+	});
+
+	describe('testing _setAccountInfo()', () => {
+		test('_setAccountInfo should set the user ID on the conf.account object ', () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			const expectedAccountObj = {
+				userID,
+				user: null,
+				userSettings: null,
+				subscriptionData: null,
+				themeData: null,
+			};
+			account._setAccountInfo(userID);
+			expect(conf.account).toEqual(expectedAccountObj);
+		});
+	});
+
+	describe('testing setAccountUserInfo()', () => {
+		// Mock the Dispatcher class only inside this test
+		jest.mock('../../src/classes/Dispatcher', () => {
+			return jest.fn().mockImplementation(() => {
+				return {
+					trigger: mockTrigger
+				};
+			});
+		});
+
+		const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+		const user = {
+			email: "ben.ghostery+100@gmail.com",
+			emailValidated: false,
+			firstName: "leury",
+			id: userID,
+			lastName: "rodriguez",
+			scopes: null,
+			stripeAccountId: "",
+			stripeCustomerId: "",
+			resolved: true
+		};
+
+		test('_setAccountUserInfo() should call the trigger function', () => {
+			dispatcher.trigger = mockTrigger;
+			mockTrigger.mockClear();
+			account._setAccountUserInfo(user);
+			expect(mockTrigger.mock.calls.length).toEqual(1);
+		});
+
+		test('_setAccountUserInfo() set the conf.account.user object', () => {
+			account._setAccountUserInfo(user);
+			expect(conf.account.user).toEqual(user);
+		});
+	});
+
+	describe('testing setSubscriptionData()', () => {
+		// Mock the Dispatcher class only inside this test
+		jest.mock('../../src/classes/Dispatcher', () => {
+			return jest.fn().mockImplementation(() => {
+				return {
+					trigger: mockTrigger
+				};
+			});
+		});
+
+		const premiumSubscription = {
+			cancelAtPeriodEnd: false,
+			created: 1589289696,
+			currentPeriodEnd: 1605187296,
+			currentPeriodStart: 1602508896,
+			id: "sub_HGV3RgLhq9OSyy",
+			planAmount: 1800,
+			planCurrency: "cad",
+			planId: "plan_premium_month_1800_cad",
+			planInterval: "month",
+			planName: "Premium for 18.00 CAD / month",
+			productId: "prod_premium",
+			productName: "Ghostery Premium",
+			status: "active",
+		};
+
+		test('setSubscriptionData() should set conf.paid_subscription to true if it is false', () => {
+			mockTrigger.mockClear();
+			conf.paid_subscription = false;
+			account._setSubscriptionData(premiumSubscription);
+			expect(conf.paid_subscription).toBe(true);
+		});
+
+		test('setSubscriptionData() should set conf.account.subscriptionData ', () => {
+			mockTrigger.mockClear();
+			account._setSubscriptionData(premiumSubscription);
+			expect(conf.account.subscriptionData).toBe(premiumSubscription);
+		});
+
+		test('setSubscriptionData() should call trigger once if conf.paid_subscription is false', () => {
+			conf.paid_subscription = true;
+			dispatcher.trigger = mockTrigger;
+			mockTrigger.mockReset();
+			account._setSubscriptionData(premiumSubscription);
+			expect(mockTrigger.mock.calls.length).toEqual(1);
+		});
+	});
+
+	describe('testing _setThemeData()', () => {
+		// Mock the Dispatcher class only inside this test
+		jest.mock('../../src/classes/Dispatcher', () => {
+			return jest.fn().mockImplementation(() => {
+				return {
+					trigger: mockTrigger
+				};
+			});
+		});
+
+		const themeData = {
+			name: 'palm',
+		}
+
+		test('_setThemeData should call the trigger function once', () => {
+			dispatcher.trigger = mockTrigger;
+			mockTrigger.mockReset();
+			account._setThemeData(themeData);
+			expect(mockTrigger.mock.calls.length).toEqual(1);
+		});
+
+		test('_setThemeData should set conf.account.themeData', () => {
+			account._setThemeData(themeData);
+			expect(conf.account.themeData).toBeDefined();
+		});
+	});
+
+	describe('testing _clearAccountInfo()', () => {
+		test('_clearAccountInfo() should clear conf.account', () => {
+			account._clearAccountInfo();
+			expect(conf.account).toEqual(null);
+		});
+
+		test('_clearAccountInfo() should clear conf.current_theme', () => {
+			account._clearAccountInfo();
+			expect(conf.current_theme).toEqual('default');
+		});
+	});
+
+	describe('testing getUserIDFromCookie()', () => {
+		test('_getUserIDFromCookie should get the user ID cookie', () => {
+			chrome.cookies.get = mockCookieGet;
+			const response = account._getUserIDFromCookie();
+			expect(chrome.cookies.get).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('testing _setConfUserSettings()', () => {
+		test('_setConfUserSettings should set the keys on the conf object', () => {
+			const userSettings = { "alert_bubble_pos": "br", "alert_bubble_timeout": 15, "alert_expanded": false, "block_by_default": false, "cliqz_adb_mode": 0, "cliqz_module_whitelist": {}, "current_theme": "default", "enable_abtests": true, "enable_ad_block": true, "enable_anti_tracking": true, "enable_autoupdate": false, "enable_click2play": true, "enable_click2play_social": true, "enable_human_web": true, "enable_metrics": false, "enable_offers": true, "enable_smart_block": true, "expand_all_trackers": true, "hide_alert_trusted": false, "ignore_first_party": true, "import_callout_dismissed": true, "is_expanded": false, "is_expert": false, "notify_library_updates": false, "notify_promotions": true, "notify_upgrade_updates": true, "reload_banner_status": { "dismissals": [], "show": true, "show_time": 1604310904402 }, "selected_app_ids": { "1": 1, "2": 1, "3": 1, "4": 1, "5": 1 }, "show_alert": true, "show_badge": true, "show_cmp": true, "show_tracker_urls": true, "site_specific_blocks": {}, "site_specific_unblocks": {}, "toggle_individual_trackers": true, "trackers_banner_status": { "dismissals": [], "show": true, "show_time": 1604310904402 } }
+			const { SYNC_ARRAY } = globals;
+			const SYNC_SET = new Set(SYNC_ARRAY);
+			account._setConfUserSettings(userSettings);
+
+			let hasAllKeys = true;
+			for (const key in SYNC_SET) {
+				if (key in conf)
+					hasAllKeys = false;
+			}
+			expect(hasAllKeys).toBe(true);
+		})
+	})
+
+	describe('testing _removeCookies', () => {
+		chrome.cookies.remove = mockCookieRemove;
+		account._removeCookies();
+		expect(chrome.cookies.remove).toHaveBeenCalledTimes(5);
+	});
 });

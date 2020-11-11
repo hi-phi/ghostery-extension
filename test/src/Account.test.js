@@ -271,7 +271,7 @@ describe('src/classes/Account.js', () => {
 			expect(account.saveUserSettings).toBeDefined();
 		});
 
-		test('saveUserSettings() should make the api call with that ID', async () => {
+		test('saveUserSettings() should call update once', async () => {
 			const user = {
 				userID: '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5',
 				email: "ben.ghostery+100@gmail.com",

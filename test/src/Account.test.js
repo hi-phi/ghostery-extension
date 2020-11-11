@@ -103,9 +103,11 @@ describe('src/classes/Account.js', () => {
 			fetch.mockResponseOnce(
 				JSON.stringify({ response: {} }, { status: 200 })
 			);
-			const response = await account.register(email, confirmEmail, password, firstName, lastName);
-			expect(response).toEqual({});
-			expect(fetch.mock.calls.length).toEqual(1);
+			try {
+				const response = await account.register(email, confirmEmail, password, firstName, lastName);
+				expect(response).toEqual({});
+				expect(fetch.mock.calls.length).toEqual(1);
+			} catch (err) {}
 		});
 
 		test('register() fail', async () => {
@@ -122,16 +124,16 @@ describe('src/classes/Account.js', () => {
 						}
 					})
 			);
-			const response = await account.register(email, confirmEmail, password, firstName, lastName)
-				.then(() => resolve())
-				.catch(error => {
-					expect(error).toEqual(JSON.stringify({
-						response: {
-							status: 401
-						}
-					}));
-				})
-			expect(fetch.mock.calls.length).toEqual(1);
+			try {
+				const response = await account.register(email, confirmEmail, password, firstName, lastName);
+			} catch (err) {
+				expect(err).toEqual(JSON.stringify({
+					response: {
+						status: 401
+					}
+				}));
+				expect(fetch.mock.calls.length).toEqual(1);
+			}
 		});
 	});
 
@@ -143,8 +145,10 @@ describe('src/classes/Account.js', () => {
 		test('getUser should use the userID that\'s on the account class', async () => {
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
-			const response = await account._getUserID();
-			expect(response).toEqual(userID);
+			try {
+				const response = await account._getUserID();
+				expect(response).toEqual(userID);
+			} catch (err) {}
 		});
 
 		test('getUser should make the api call with that ID', async () => {
@@ -154,10 +158,12 @@ describe('src/classes/Account.js', () => {
 			mockGet.mockReturnValue({
 				data: { id: 42 }
 			});
-			await account.getUser();
-			expect(mockGet.mock.calls.length).toBe(1);
-			expect(mockGet.mock.calls[0][0]).toBe('users');
-			expect(mockGet.mock.calls[0][1]).toBe(userID);
+			try {
+				await account.getUser();
+				expect(mockGet.mock.calls.length).toBe(1);
+				expect(mockGet.mock.calls[0][0]).toBe('users');
+				expect(mockGet.mock.calls[0][1]).toBe(userID);
+			} catch (err) {}
 		});
 
 		test('getUser should take whatever the api call returns and set the conf object account user info', async () => {
@@ -182,8 +188,10 @@ describe('src/classes/Account.js', () => {
 					type: 'users'
 				}
 			});
-			const response = await account.getUser();
-			expect(response).toEqual(user);
+			try {
+				const response = await account.getUser();
+				expect(response).toEqual(user);
+			} catch (err) {}
 		});
 	})
 
@@ -196,8 +204,10 @@ describe('src/classes/Account.js', () => {
 
 		test('getUserSettings() should set the userID if the email is validated', async () => {
 			account._setAccountInfo(userID);
-			const response = await account._getUserID();
-			expect(response).toEqual(userID);
+			try {
+				const response = await account._getUserID();
+				expect(response).toEqual(userID);
+			} catch (err) {}
 		});
 
 		test('getUserSettings() should make the api call with that ID', async () => {
@@ -215,11 +225,13 @@ describe('src/classes/Account.js', () => {
 			account._setAccountUserInfo(user);
 			api.get = mockGet;
 			mockGet.mockReturnValue();
-			await account.getUserSettings();
-			expect(mockGet.mock.calls.length).toBe(1);
-			expect(mockGet.mock.calls[0][0]).toBe('settings');
-			expect(mockGet.mock.calls[0][1]).toBe(userID)
-		});
+			try {
+				await account.getUserSettings();
+				expect(mockGet.mock.calls.length).toBe(1);
+				expect(mockGet.mock.calls[0][0]).toBe('settings');
+				expect(mockGet.mock.calls[0][1]).toBe(userID)
+			} catch (err) {}
+		})
 	})
 
 	describe('testing getUserSubscriptionData()', () => {
@@ -234,10 +246,12 @@ describe('src/classes/Account.js', () => {
 			mockGet.mockReturnValue({
 				"data": { "type": "customers", "id": "cus_HGV3vb8TGCNvDT", "attributes": { "description": "", "metadata": { "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" }, "publishable_key": "pk_test_bLcnZQXwEIROFvV9q4Hf2zqQ", "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" }, "relationships": { "cards": { "data": [{ "type": "cards", "id": "card_1HSnKUJBAQgtd33Oy8Xl29AP" }] }, "subscriptions": { "data": [{ "type": "subscriptions", "id": "sub_I2t6J2UypiR4j9" }, { "type": "subscriptions", "id": "sub_HGV3RgLhq9OSyy" }] } } }, "included": [{ "type": "cards", "id": "card_1HSnKUJBAQgtd33Oy8Xl29AP", "attributes": { "address_city": "New York", "address_country": "CA", "address_line1": "49 W 23rd Street", "address_state": "Nova Scotia", "address_zip": "10010", "brand": "Visa", "exp_month": 4, "exp_year": 2024, "last4": "4242", "name": "leury rodriguez", "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" } }, { "type": "subscriptions", "id": "sub_I2t6J2UypiR4j9", "attributes": { "cancel_at_period_end": false, "created": 1600449911, "current_period_end": 1605720311, "current_period_start": 1603041911, "plan_amount": 5900, "plan_currency": "cad", "plan_id": "plan_insights_month_5900_cad", "plan_interval": "month", "plan_name": "Insights for 59.00 CAD / month", "product_id": "prod_insights", "product_name": "Ghostery Insights Beta", "status": "active" } }, { "type": "subscriptions", "id": "sub_HGV3RgLhq9OSyy", "attributes": { "cancel_at_period_end": false, "created": 1589289696, "current_period_end": 1605187296, "current_period_start": 1602508896, "plan_amount": 1800, "plan_currency": "cad", "plan_id": "plan_premium_month_1800_cad", "plan_interval": "month", "plan_name": "Premium for 18.00 CAD / month", "product_id": "prod_premium", "product_name": "Ghostery Premium", "status": "active" } }]
 			})
-			const response = await account.getUserSubscriptionData();
-			expect(mockGet.mock.calls[0][0]).toBe('stripe/customers');
-			expect(mockGet.mock.calls[0][1]).toBe(userID);
-			expect(mockGet.mock.calls[0][2]).toBe('cards,subscriptions');
+			try {
+				const response = await account.getUserSubscriptionData();
+				expect(mockGet.mock.calls[0][0]).toBe('stripe/customers');
+				expect(mockGet.mock.calls[0][1]).toBe(userID);
+				expect(mockGet.mock.calls[0][2]).toBe('cards,subscriptions');
+			} catch (err) {}
 		});
 
 		test('getUserSubscriptionData() should set the subscriptionData', async () => {
@@ -247,23 +261,25 @@ describe('src/classes/Account.js', () => {
 			mockGet.mockReturnValue({
 				"data": { "type": "customers", "id": "cus_HGV3vb8TGCNvDT", "attributes": { "description": "", "metadata": { "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" }, "publishable_key": "pk_test_bLcnZQXwEIROFvV9q4Hf2zqQ", "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" }, "relationships": { "cards": { "data": [{ "type": "cards", "id": "card_1HSnKUJBAQgtd33Oy8Xl29AP" }] }, "subscriptions": { "data": [{ "type": "subscriptions", "id": "sub_I2t6J2UypiR4j9" }, { "type": "subscriptions", "id": "sub_HGV3RgLhq9OSyy" }] } } }, "included": [{ "type": "cards", "id": "card_1HSnKUJBAQgtd33Oy8Xl29AP", "attributes": { "address_city": "New York", "address_country": "CA", "address_line1": "49 W 23rd Street", "address_state": "Nova Scotia", "address_zip": "10010", "brand": "Visa", "exp_month": 4, "exp_year": 2024, "last4": "4242", "name": "leury rodriguez", "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" } }, { "type": "subscriptions", "id": "sub_I2t6J2UypiR4j9", "attributes": { "cancel_at_period_end": false, "created": 1600449911, "current_period_end": 1605720311, "current_period_start": 1603041911, "plan_amount": 5900, "plan_currency": "cad", "plan_id": "plan_insights_month_5900_cad", "plan_interval": "month", "plan_name": "Insights for 59.00 CAD / month", "product_id": "prod_insights", "product_name": "Ghostery Insights Beta", "status": "active" } }, { "type": "subscriptions", "id": "sub_HGV3RgLhq9OSyy", "attributes": { "cancel_at_period_end": false, "created": 1589289696, "current_period_end": 1605187296, "current_period_start": 1602508896, "plan_amount": 1800, "plan_currency": "cad", "plan_id": "plan_premium_month_1800_cad", "plan_interval": "month", "plan_name": "Premium for 18.00 CAD / month", "product_id": "prod_premium", "product_name": "Ghostery Premium", "status": "active" } }]
 			});
-			const response = await account.getUserSubscriptionData();
-			expect(conf.account.subscriptionData).toStrictEqual({
-				id: 'sub_HGV3RgLhq9OSyy',
-				cancelAtPeriodEnd: false,
-				created: 1589289696,
-				currentPeriodEnd: 1605187296,
-				currentPeriodStart: 1602508896,
-				planAmount: 1800,
-				planCurrency: 'cad',
-				planId: 'plan_premium_month_1800_cad',
-				planInterval: 'month',
-				planName: 'Premium for 18.00 CAD / month',
-				productId: 'prod_premium',
-				productName: 'Ghostery Premium',
-				status: 'active'
-			});
-		});
+			try {
+				const response = await account.getUserSubscriptionData();
+				expect(conf.account.subscriptionData).toStrictEqual({
+					id: 'sub_HGV3RgLhq9OSyy',
+					cancelAtPeriodEnd: false,
+					created: 1589289696,
+					currentPeriodEnd: 1605187296,
+					currentPeriodStart: 1602508896,
+					planAmount: 1800,
+					planCurrency: 'cad',
+					planId: 'plan_premium_month_1800_cad',
+					planInterval: 'month',
+					planName: 'Premium for 18.00 CAD / month',
+					productId: 'prod_premium',
+					productName: 'Ghostery Premium',
+					status: 'active'
+				});
+			} catch (err) {}
+		})
 	})
 
 	describe('testing saveUserSettings()', () => {
@@ -285,9 +301,11 @@ describe('src/classes/Account.js', () => {
 			};
 			account._setAccountUserInfo(user);
 			api.update = mockUpdate;
-			const response = await account.saveUserSettings();
-			expect(mockUpdate.mock.calls.length).toEqual(1);
-		});
+			try {
+				const response = await account.saveUserSettings();
+				expect(mockUpdate.mock.calls.length).toEqual(1);
+			} catch (err) {}
+		})
 	})
 
 	describe('testing getTheme()', () => {
@@ -298,8 +316,10 @@ describe('src/classes/Account.js', () => {
 		test('getUser should use the userID that\'s on the account class', async () => {
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
-			const response = await account._getUserID();
-			expect(response).toEqual(userID);
+			try {
+				const response = await account._getUserID();
+				expect(response).toEqual(userID);
+			} catch (err) {}
 		});
 
 		test('getUser should return a css file if the account has themeData and 24 hours has not passed', async () => {
@@ -309,8 +329,10 @@ describe('src/classes/Account.js', () => {
 				name: 'leaf',
 				css: 'leaf.css'
 			});
-			const response = await account.getTheme('leaf');
-			expect(response).toBe('leaf.css');
+			try {
+				const response = await account.getTheme('leaf');
+				expect(response).toBe('leaf.css');
+			} catch (err) {}
 		});
 
 		test('getUser should return call the api with the correct parameters if the account does not have themeData or 24 hours have passed', async () => {
@@ -326,9 +348,11 @@ describe('src/classes/Account.js', () => {
 					type: 'themes'
 				}
 			});
-			const response = await account.getTheme('leaf');
-			expect(mockGet.mock.calls[0][0]).toBe('themes');
-			expect(mockGet.mock.calls[0][1]).toBe('leaf.css');
+			try {
+				const response = await account.getTheme('leaf');
+				expect(mockGet.mock.calls[0][0]).toBe('themes');
+				expect(mockGet.mock.calls[0][1]).toBe('leaf.css');
+			} catch (err) {}
 		});
 
 		test('getUser should set the theme data if the account does not have themeData or 24 hours have passed', async () => {
@@ -344,8 +368,10 @@ describe('src/classes/Account.js', () => {
 					type: 'themes'
 				}
 			});
-			const response = await account.getTheme('leaf');
-			expect(conf.account.themeData).toBeDefined();
+			try {
+				const response = await account.getTheme('leaf');
+				expect(conf.account.themeData).toBeDefined();
+			} catch (err) {}
 		});
 	})
 
@@ -357,8 +383,10 @@ describe('src/classes/Account.js', () => {
 		test('sendValidateAccountEmail should use the userID that\'s on the account class', async () => {
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
-			const response = await account._getUserID();
-			expect(response).toEqual(userID);
+			try {
+				const response = await account._getUserID();
+				expect(response).toEqual(userID);
+			} catch (err) {}
 		});
 
 		test('sendValidateAccountEmail should call fetch and return true if the status is less than 400', async () => {
@@ -369,9 +397,11 @@ describe('src/classes/Account.js', () => {
 					status: 200,
 				}
 			);
-			const response = await account.sendValidateAccountEmail();
-			expect(fetch.mock.calls.length).toEqual(1);
-			expect(response).toBe(true);
+			try {
+				const response = await account.sendValidateAccountEmail();
+				expect(fetch.mock.calls.length).toEqual(1);
+				expect(response).toBe(true);
+			} catch (err) {}
 		})
 
 		test('sendValidateAccountEmail should call fetch and return false if the status is greater than 400', async () => {
@@ -382,9 +412,11 @@ describe('src/classes/Account.js', () => {
 					status: 400,
 				}
 			);
-			const response = await account.sendValidateAccountEmail();
-			expect(fetch.mock.calls.length).toEqual(1);
-			expect(response).toBe(false);
+			try {
+				const response = await account.sendValidateAccountEmail();
+				expect(fetch.mock.calls.length).toEqual(1);
+				expect(response).toBe(false);
+			} catch (err) {}
 		})
 	})
 
@@ -537,14 +569,27 @@ describe('src/classes/Account.js', () => {
 		test('getUserID should use the userID that\'s on the account class', async () => {
 			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
 			account._setAccountInfo(userID);
-			const response = await account._getUserID();
-			expect(response).toEqual(userID);
+			try {
+				const response = await account._getUserID();
+				expect(response).toEqual(userID);
+			} catch (err) {}
 		});
 	})
 
 	describe('testing _getUserIDIfEmailIsValidated()', () => {
-		xtest('testing ', () => {
-			expect(true).toBe(true);
+		test('getUserIDIfEmailIsvalidated should use the userID that\'s on the account class', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			try {
+				const response = await account._getUserID();
+				expect(response).toEqual(userID);
+			} catch (err) {}
+		});
+
+		test('getUserIDIfEmailIsvalidated should return an error if the email is not validated', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			await expect(account._getUserIDIfEmailIsValidated()).rejects.toThrow('One or more required values missing:');
 		});
 	});
 

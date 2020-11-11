@@ -69,14 +69,14 @@ class PromoModal extends React.Component {
 		let url;
 		switch (product) {
 			case PLUS:
-				url = `${GHOSTERY_BASE_URL}/products/plus?utm_source=gbe&utm_campaign=${utm_campaign}`;
+				url = `${GHOSTERY_BASE_URL}/pricing?utm_source=gbe&utm_campaign=${utm_campaign}`;
 				break;
 			case PREMIUM:
 				url = `${GHOSTERY_BASE_URL}/midnight?utm_source=gbe&utm_campaign=${utm_campaign}`;
 				break;
 			case INSIGHTS:
 				sendMessage('ping', 'promo_modals_insights_upgrade_cta');
-				url = `${GHOSTERY_BASE_URL}/insights/?utm_source=gbe&utm_campaign=${utm_campaign}`;
+				url = `${GHOSTERY_BASE_URL}/insights?utm_source=gbe&utm_campaign=${utm_campaign}`;
 				break;
 			default:
 		}
@@ -200,12 +200,13 @@ PromoModal.propTypes = {
 	type: PropTypes.string.isRequired,
 	location: PropTypes.string,
 	isPlus: PropTypes.bool,
-	tab_id: PropTypes.number.isRequired,
+	tab_id: PropTypes.number,
 };
 
 PromoModal.defaultProps = {
 	location: 'panel',
 	isPlus: false,
+	tab_id: null,
 };
 
 export default PromoModal;

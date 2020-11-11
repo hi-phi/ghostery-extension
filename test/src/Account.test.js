@@ -49,6 +49,9 @@ beforeEach(() => {
 	api.mockClear()
 	mockGet.mockClear();
 	mockTrigger.mockReset();
+	mockCookieGet.mockClear();
+	mockCookieSet.mockClear();
+	mockCookieRemove.mockClear();
 });
 
 describe('src/classes/Account.js', () => {
@@ -569,29 +572,22 @@ describe('src/classes/Account.js', () => {
 		});
 	})
 
-	// describe('testing setLoginCookie()', () => {
-	// 	test('setLoginCookie() is not undefined', () => {
-	// 		expect(account._setLoginCookie()).toBeDefined();
-	// 	});
+	describe('testing setLoginCookie()', () => {
+		test('setLoginCookie() is not undefined', () => {
+			expect(account._setLoginCookie()).toBeDefined();
+		});
 
-	// 	test('setLoginCookie() should error if it is called without a name or value detail object', async () => {
-	// 		await expect(account._setLoginCookie({ name: 'test', value: '', expirationDate: 'test', httpOnly: true})).rejects.toThrow('One or more required values missing:');
-	// 		await expect(account._setLoginCookie({ name: '', value: 'test', expirationDate: 'test', httpOnly: true})).rejects.toThrow('One or more required values missing:');
-	// 	});
+		test('setLoginCookie() should error if it is called without a name or value detail object', async () => {
+			await expect(account._setLoginCookie({ name: 'test', value: '', expirationDate: 'test', httpOnly: true})).rejects.toThrow('One or more required values missing:');
+			await expect(account._setLoginCookie({ name: '', value: 'test', expirationDate: 'test', httpOnly: true})).rejects.toThrow('One or more required values missing:');
+		});
 
-	// 	test('setLoginCookie() ', async () => {
-	// 		const details = {
-	// 			name: 'cookie',
-	// 			value: 'test',
-	// 			expirationDate: '2020-11-6',
-	// 			httpOnly: false
-	// 		};
-	// 		if (typeof details !== undefined) {
-	// 			const cookie = await account._setLoginCookie(details);
-	// 			console.log(cookie);
-	// 		}
-	// 	});
-	// })
+		test('setLoginCookie() should call chrome.cookies.set', async () => {
+			chrome.cookies.set = mockCookieSet;
+			account._setLoginCookie({ name: 'test', value: 'test', expirationDate: 'test', httpOnly: true});
+			expect(chrome.cookies.set).toHaveBeenCalledTimes(1);
+		});
+	})
 
 
 	// describe('testing _getUserID()', () => {

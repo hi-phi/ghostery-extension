@@ -11,7 +11,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0
  */
 
-import { mockGet, mockInit } from '../../src/utils/__mocks__/api';
+import { mockGet, mockInit, mockUpdate } from '../../src/utils/__mocks__/api';
 import { mockTrigger } from '../../src/utils/__mocks__/dispatcher';
 
 import _ from 'underscore';
@@ -20,7 +20,6 @@ import globals from '../../src/classes/Globals';
 import api from '../../src/utils/api';
 import dispatcher from '../../src/classes/Dispatcher';
 import conf from '../../src/classes/Conf';
-import RSVP from 'rsvp';
 
 const mockCookieGet = jest.fn();
 const mockCookieSet = jest.fn();
@@ -39,7 +38,8 @@ jest.mock('../../src/utils/api', () => {
 	return jest.fn().mockImplementation(() => {
 		return {
 			get: mockGet,
-			init: mockInit
+			init: mockInit,
+			update: mockUpdate,
 		};
 	});
 });
@@ -48,7 +48,8 @@ beforeEach(() => {
 	fetch.resetMocks();
 	api.mockClear()
 	mockGet.mockClear();
-	mockTrigger.mockReset();
+	mockUpdate.mockClear();
+	mockTrigger.mockClear();
 	mockCookieGet.mockClear();
 	mockCookieSet.mockClear();
 	mockCookieRemove.mockClear();
@@ -94,9 +95,9 @@ describe('src/classes/Account.js', () => {
 		});
 
 		test('register() success', async () => {
-			const email = 'ben.ghostery+85@gmail.com';
-			const confirmEmail = 'ben.ghostery+85@gmail.com';
-			const password = 'ghostery';
+			const email = 'testEmail';
+			const confirmEmail = 'testEmail';
+			const password = 'password';
 			const firstName = 'leury';
 			const lastName = 'rodriguez';
 			fetch.mockResponseOnce(
@@ -108,9 +109,9 @@ describe('src/classes/Account.js', () => {
 		});
 
 		test('register() fail', async () => {
-			const email = 'ben.ghostery+85@gmail.com';
-			const confirmEmail = 'ben.ghostery+85@gmail.com';
-			const password = 'fakepassword';
+			const email = 'testEmail';
+			const confirmEmail = 'testEmail';
+			const password = 'password';
 			const firstName = 'leury';
 			const lastName = 'rodriguez';
 			fetch.mockRejectOnce(
@@ -133,45 +134,6 @@ describe('src/classes/Account.js', () => {
 			expect(fetch.mock.calls.length).toEqual(1);
 		});
 	});
-
-	describe('testing logout() success', () => {
-		xtest('logout() is not undefined', () => {
-			expect(account.logout).toBeDefined();
-		});
-
-		xtest('logout() success', async () => {
-			var promise = new RSVP.Promise(account.logout);
-			promise.then(function (d) {
-				const expectedResponse = { "_id": 1, "_label": undefined, "_result": undefined, "_state": undefined, "_subscribers": [], "status": 200 };
-				fetch.mockResponseOnce(
-					JSON.stringify(expectedResponse)
-				);
-				expect(response).toEqual({});
-				expect(fetch.mock.calls.length).toEqual(1);
-			})
-		});
-
-		xtest('logout() fail', () => {
-			fetch.mockRejectOnce(
-				JSON.stringify(
-					{
-						response: {
-							status: 401
-						}
-					})
-			);
-			const response = account.logout()
-				.then(() => resolve())
-				.catch(error => {
-					expect(error).toEqual(JSON.stringify({
-						response: {
-							status: 401
-						}
-					}));
-				})
-			expect(fetch.mock.calls.length).toEqual(0);
-		});
-	})
 
 	describe('testing getUser() success', () => {
 		test('getUser() is not undefined', () => {
@@ -200,73 +162,45 @@ describe('src/classes/Account.js', () => {
 
 		test('getUser should take whatever the api call returns and set the conf object account user info', async () => {
 			const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
+			const user = {
+				email: "ben.ghostery+100@gmail.com",
+				emailValidated: false,
+				firstName: "leury",
+				id: userID,
+				lastName: "rodriguez",
+				scopes: null,
+				stripeAccountId: "",
+				stripeCustomerId: "",
+				resolved: true
+			}
 			account._setAccountInfo(userID);
 			api.get = mockGet;
 			mockGet.mockReturnValue({
 				data:  {
-					attributes: {
-						email: "ben.ghostery+100@gmail.com",
-						emailValidated: false,
-						firstName: "leury",
-						id: userID,
-						lastName: "rodriguez",
-						scopes: null,
-						stripeAccountId: "",
-						stripeCustomerId: "",
-						resolved: true
-					},
+					attributes: user,
 					id: userID,
 					type: 'users'
 				}
 			});
 			const response = await account.getUser();
-			expect(conf.account.user).toStrictEqual({
-				email: "ben.ghostery+100@gmail.com",
-				emailValidated: false,
-				firstName: "leury",
-				id: userID,
-				lastName: "rodriguez",
-				scopes: null,
-				stripeAccountId: "",
-				stripeCustomerId: "",
-				resolved: true
-			});
-			expect(response).toStrictEqual({
-				email: "ben.ghostery+100@gmail.com",
-				emailValidated: false,
-				firstName: "leury",
-				id: userID,
-				lastName: "rodriguez",
-				scopes: null,
-				stripeAccountId: "",
-				stripeCustomerId: "",
-				resolved: true
-			});
+			expect(response).toEqual(user);
 		});
-
-		// test('getUser() fail', async () => {
-		// 	const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
-		// 	account._setAccountInfo(userID);
-		// 	api.get = mockGet;
-		// 	mockGet.mockRejectedValue();
-		// 	const response = await account.getUser();
-		// 	expect(response).toBe(null);
-		// });
 	})
 
 	describe('testing getUserSettings()', () => {
+		const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
+
 		test('getUserSettings() is not undefined', () => {
 			expect(account.getUserSettings).toBeDefined();
 		});
 
 		test('getUserSettings() should set the userID if the email is validated', async () => {
-			const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
 			account._setAccountInfo(userID);
 			const response = await account._getUserID();
 			expect(response).toEqual(userID);
 		});
 
-		xtest('getUserSettings() should make the api call with that ID', async () => {
+		test('getUserSettings() should make the api call with that ID', async () => {
 			const user = {
 				userID: '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5',
 				email: "ben.ghostery+100@gmail.com",
@@ -330,7 +264,6 @@ describe('src/classes/Account.js', () => {
 				status: 'active'
 			});
 		});
-		test('getUserSubscriptionData() should send a metrics ping', async () => {});
 	})
 
 	describe('testing saveUserSettings()', () => {
@@ -338,15 +271,22 @@ describe('src/classes/Account.js', () => {
 			expect(account.saveUserSettings).toBeDefined();
 		});
 
-		xtest('saveUserSettings() should make the api call with that ID', async () => {
-			const userID = '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5';
-			account._setAccountInfo(userID);
-			api.get = mockGet;
-			mockGet.mockReturnValue({
-				"data": { "type": "customers", "id": "cus_HGV3vb8TGCNvDT", "attributes": { "description": "", "metadata": { "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" }, "publishable_key": "pk_test_bLcnZQXwEIROFvV9q4Hf2zqQ", "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" }, "relationships": { "cards": { "data": [{ "type": "cards", "id": "card_1HSnKUJBAQgtd33Oy8Xl29AP" }] }, "subscriptions": { "data": [{ "type": "subscriptions", "id": "sub_I2t6J2UypiR4j9" }, { "type": "subscriptions", "id": "sub_HGV3RgLhq9OSyy" }] } } }, "included": [{ "type": "cards", "id": "card_1HSnKUJBAQgtd33Oy8Xl29AP", "attributes": { "address_city": "New York", "address_country": "CA", "address_line1": "49 W 23rd Street", "address_state": "Nova Scotia", "address_zip": "10010", "brand": "Visa", "exp_month": 4, "exp_year": 2024, "last4": "4242", "name": "leury rodriguez", "user_id": "3ccf42fa-8062-4b13-a814-78147fa2cc3c" } }, { "type": "subscriptions", "id": "sub_I2t6J2UypiR4j9", "attributes": { "cancel_at_period_end": false, "created": 1600449911, "current_period_end": 1605720311, "current_period_start": 1603041911, "plan_amount": 5900, "plan_currency": "cad", "plan_id": "plan_insights_month_5900_cad", "plan_interval": "month", "plan_name": "Insights for 59.00 CAD / month", "product_id": "prod_insights", "product_name": "Ghostery Insights Beta", "status": "active" } }, { "type": "subscriptions", "id": "sub_HGV3RgLhq9OSyy", "attributes": { "cancel_at_period_end": false, "created": 1589289696, "current_period_end": 1605187296, "current_period_start": 1602508896, "plan_amount": 1800, "plan_currency": "cad", "plan_id": "plan_premium_month_1800_cad", "plan_interval": "month", "plan_name": "Premium for 18.00 CAD / month", "product_id": "prod_premium", "product_name": "Ghostery Premium", "status": "active" } }]
-			})
+		test('saveUserSettings() should make the api call with that ID', async () => {
+			const user = {
+				userID: '36fd0fc3-50dc-45f4-adf7-f7b01cea07a5',
+				email: "ben.ghostery+100@gmail.com",
+				emailValidated: true,
+				firstName: "leury",
+				lastName: "rodriguez",
+				scopes: null,
+				stripeAccountId: "",
+				stripeCustomerId: "",
+				resolved: true
+			};
+			account._setAccountUserInfo(user);
+			api.update = mockUpdate;
 			const response = await account.saveUserSettings();
-			// Blocked by EmailValidated
+			expect(mockUpdate.mock.calls.length).toEqual(1);
 		});
 	})
 
@@ -589,41 +529,18 @@ describe('src/classes/Account.js', () => {
 		});
 	})
 
+	describe('testing _getUserID()', () => {
+		test('_getUserID() is not undefined', () => {
+			expect(account._getUserID()).toBeDefined();
+		});
 
-	// describe('testing _getUserID()', () => {
-	// 	test('_getUserID() is not undefined', () => {
-	// 		expect(account._getUserID()).toBeDefined();
-	// 	});
-
-	// 	test('getUserID should use the userID that\'s on the account class', async () => {
-	// 		const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
-	// 		account._setAccountInfo(userID);
-	// 		const response = await account._getUserID();
-	// 		expect(response).toEqual(userID);
-	// 	});
-
-	// 	test('getUserID should set the account info from the cookie if conf.account is null', async () => {
-	// 		conf.account = null;
-	// 		const details = {
-	// 			name: 'cookie',
-	// 			value: 'test',
-	// 			expirationDate: '2020-11-6',
-	// 			httpOnly: false
-	// 		};
-	// 		try {
-	// 			await account._setLoginCookie(details);
-	// 		} catch (err) {}
-
-	// 		try {
-	// 			const response = await account._getUserID();
-	// 		} catch (err) {
-	// 			console.log(err);
-	// 			expect(err).toBe(true);
-	// 		}
-	// 		// account._setAccountInfo(''); // Clear account info from previous test
-	// 		// await expect(account._getUserID()).rejects.toThrow('_getUserID() Not logged in');
-	// 	});
-	// })
+		test('getUserID should use the userID that\'s on the account class', async () => {
+			const userID = 'd7999be5-210b-44f1-855d-3cf00ff579db';
+			account._setAccountInfo(userID);
+			const response = await account._getUserID();
+			expect(response).toEqual(userID);
+		});
+	})
 
 	describe('testing _getUserIDIfEmailIsValidated()', () => {
 		xtest('testing ', () => {

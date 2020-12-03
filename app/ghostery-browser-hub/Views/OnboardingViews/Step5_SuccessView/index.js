@@ -11,6 +11,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0
  */
 
-import SuccessView from './SuccessView';
+import Step5_SuccessView from './Step5_SuccessView';
 
-export default SuccessView;
+export default Step5_SuccessView;

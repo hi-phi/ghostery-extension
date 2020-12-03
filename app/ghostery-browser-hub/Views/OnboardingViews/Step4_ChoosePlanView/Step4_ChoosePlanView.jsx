@@ -22,22 +22,22 @@ const PLUS = 1;
 const PREMIUM = 2;
 
 const searchPromo = () => (
-	<div className="ChoosePlanView__searchPromoContainer">
-		<div className="ChoosePlanView__searchLogo" />
-		<div className="ChoosePlanView__adFree">{ t('ghostery_browser_hub_onboarding_ad_free_with_ghostery_plus_subscription') }</div>
-		<div className="ChoosePlanView__adFreePromo">{ t('ghostery_browser_hub_onboarding_ad_free_promo') }</div>
-		<div className="ChoosePlanView__adFreePromoDescription">{ t('ghostery_browser_hub_onboarding_ad_free_promo_description') }</div>
+	<div className="Step4_ChoosePlanView__searchPromoContainer">
+		<div className="Step4_ChoosePlanView__searchLogo" />
+		<div className="Step4_ChoosePlanView__adFree">{ t('ghostery_browser_hub_onboarding_ad_free_with_ghostery_plus_subscription') }</div>
+		<div className="Step4_ChoosePlanView__adFreePromo">{ t('ghostery_browser_hub_onboarding_ad_free_promo') }</div>
+		<div className="Step4_ChoosePlanView__adFreePromoDescription">{ t('ghostery_browser_hub_onboarding_ad_free_promo_description') }</div>
 	</div>
 );
 
 const basicCard = (checked, handleClick) => {
-	const cardClassNames = ClassNames('ChoosePlanView__card basic', {
+	const cardClassNames = ClassNames('Step4_ChoosePlanView__card basic', {
 		checked
 	});
 	return (
-		<div className="ChoosePlanView__cardOuter">
+		<div className="Step4_ChoosePlanView__cardOuter">
 			<div className={cardClassNames} onClick={handleClick} data-equalizer-watch>
-				<div className="ChoosePlanView__radioButtonContainer">
+				<div className="Step4_ChoosePlanView__radioButtonContainer">
 					<RadioButton checked={checked} handleClick={handleClick} altDesign />
 				</div>
 				<div className="card-header-background-free" />
@@ -45,24 +45,24 @@ const basicCard = (checked, handleClick) => {
 					<div className="ghostery-free-image text-center" title="Ghostery Free" alt="Ghostery Free" />
 				</div>
 				<h2>Ghostery</h2>
-				<div className="ChoosePlanView__price">
-					<p className="ChoosePlanView__price-blue-alt font-size-36">{t('hub_upgrade_plan_free')}</p>
+				<div className="Step4_ChoosePlanView__price">
+					<p className="Step4_ChoosePlanView__price-blue-alt font-size-36">{t('hub_upgrade_plan_free')}</p>
 				</div>
 				<p className="card-sub-header"><strong>{t('hub_upgrade_basic_protection')}</strong></p>
-				<div className="ChoosePlanView__valuePropList basic">
-					<div className="ChoosePlanView__cardSubCopy">
+				<div className="Step4_ChoosePlanView__valuePropList basic">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_private_search')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_tracker_protection')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_speedy_page_loads')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_intelligence_technology')}
 					</div>
@@ -73,48 +73,48 @@ const basicCard = (checked, handleClick) => {
 };
 
 const plusCard = (checked, handleClick) => {
-	const cardClassNames = ClassNames('ChoosePlanView__card plus', {
+	const cardClassNames = ClassNames('Step4_ChoosePlanView__card plus', {
 		checked
 	});
 	return (
-		<div className="ChoosePlanView__cardOuter">
+		<div className="Step4_ChoosePlanView__cardOuter">
 			<div className={cardClassNames} onClick={handleClick} data-equalizer-watch>
-				<div className="ChoosePlanView__radioButtonContainer">
+				<div className="Step4_ChoosePlanView__radioButtonContainer">
 					<RadioButton checked={checked} handleClick={handleClick} altDesign />
 				</div>
 				<div className="ghostery-plus-image-container">
 					<div className="ghostery-plus-image" title="Ghostery Plus" alt="Ghostery Plus" />
 				</div>
 				<h2>Ghostery Plus</h2>
-				<div className="ChoosePlanView__price">
+				<div className="Step4_ChoosePlanView__price">
 					<Fragment>
-						<p className="ChoosePlanView__price-gold font-size-36">$4.99</p>
-						<p className="ChoosePlanView__price-gold sub-text font-size-12">{t('per_month')}</p>
+						<p className="Step4_ChoosePlanView__price-gold font-size-36">$4.99</p>
+						<p className="Step4_ChoosePlanView__price-gold sub-text font-size-12">{t('per_month')}</p>
 					</Fragment>
 				</div>
 				<p className="card-sub-header"><strong>{t('hub_upgrade_additional_protection')}</strong></p>
-				<div className="ChoosePlanView__valuePropList">
-					<div className="ChoosePlanView__cardSubCopy">
+				<div className="Step4_ChoosePlanView__valuePropList">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_private_search')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_tracker_protection')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_speedy_page_loads')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_intelligence_technology')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_ad_free')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_supports_ghosterys_mission')}
 					</div>
@@ -125,13 +125,13 @@ const plusCard = (checked, handleClick) => {
 };
 
 const premiumCard = (checked, handleClick) => {
-	const cardClassNames = ClassNames('ChoosePlanView__card premium', {
+	const cardClassNames = ClassNames('Step4_ChoosePlanView__card premium', {
 		checked
 	});
 	return (
-		<div className="ChoosePlanView__cardOuter">
+		<div className="Step4_ChoosePlanView__cardOuter">
 			<div className={cardClassNames} onClick={handleClick} data-equalizer-watch>
-				<div className="ChoosePlanView__radioButtonContainer">
+				<div className="Step4_ChoosePlanView__radioButtonContainer">
 					<RadioButton checked={checked} handleClick={handleClick} altDesign />
 				</div>
 				<div className="ghostery-premium-image-container">
@@ -139,43 +139,43 @@ const premiumCard = (checked, handleClick) => {
 				</div>
 				<div className="ghostery-premium-image-background" />
 				<h2>Ghostery Premium</h2>
-				<div className="ChoosePlanView__price">
+				<div className="Step4_ChoosePlanView__price">
 					<Fragment>
-						<p className="ChoosePlanView__price-purple sub-text font-size-36">$11.99</p>
-						<p className="ChoosePlanView__price-purple sub-text font-size-12">{t('per_month')}</p>
+						<p className="Step4_ChoosePlanView__price-purple sub-text font-size-36">$11.99</p>
+						<p className="Step4_ChoosePlanView__price-purple sub-text font-size-12">{t('per_month')}</p>
 					</Fragment>
 				</div>
 				<p className="card-sub-header"><strong>{t('hub_upgrade_maximum_protection')}</strong></p>
-				<div className="ChoosePlanView__valuePropList">
-					<div className="ChoosePlanView__cardSubCopy">
+				<div className="Step4_ChoosePlanView__valuePropList">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_private_search')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_tracker_protection')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_speedy_page_loads')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_intelligence_technology')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_ad_free')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_supports_ghosterys_mission')}
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						VPN
 					</div>
-					<div className="ChoosePlanView__cardSubCopy">
+					<div className="Step4_ChoosePlanView__cardSubCopy">
 						<span className="check blue" />
 						{t('ghostery_browser_hub_onboarding_unlimited_bandwidth')}
 					</div>
@@ -185,7 +185,7 @@ const premiumCard = (checked, handleClick) => {
 	);
 };
 
-class ChoosePlanView extends React.Component {
+class Step4_ChoosePlanView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -270,17 +270,17 @@ class ChoosePlanView extends React.Component {
 		const premiumCheckoutLink = `${globals.CHECKOUT_BASE_URL}/premium`;
 		return (
 			<div>
-				<div className="ChoosePlanView__yourPrivacyPlan">{this.renderTitleText()}</div>
-				<div className="ChoosePlanView__subtitle">{this.renderSubtitleText(shouldShowSearchPromo)}</div>
+				<div className="Step4_ChoosePlanView__yourPrivacyPlan">{this.renderTitleText()}</div>
+				<div className="Step4_ChoosePlanView__subtitle">{this.renderSubtitleText(shouldShowSearchPromo)}</div>
 				{shouldShowSearchPromo && (
 					<Fragment>
 						{searchPromo()}
-						<a className="ChoosePlanView__searchCTAButton" href={`${globals.CHECKOUT_BASE_URL}/plus`} target="_blank" rel="noreferrer">{t('hub_plan_start_trial')}</a>
-						<div className="ChoosePlanView__seeAllPlans" onClick={this.scrollToPlans}>{t('ghostery_browser_hub_onboarding_see_all_plans')}</div>
-						<div className="ChoosePlanView__arrowDown" onClick={this.scrollToPlans} />
+						<a className="Step4_ChoosePlanView__searchCTAButton" href={`${globals.CHECKOUT_BASE_URL}/plus`} target="_blank" rel="noreferrer">{t('hub_plan_start_trial')}</a>
+						<div className="Step4_ChoosePlanView__seeAllPlans" onClick={this.scrollToPlans}>{t('ghostery_browser_hub_onboarding_see_all_plans')}</div>
+						<div className="Step4_ChoosePlanView__arrowDown" onClick={this.scrollToPlans} />
 					</Fragment>
 				)}
-				<div className="ChoosePlanView__plansContainer" ref={this.plansRef}>
+				<div className="Step4_ChoosePlanView__plansContainer" ref={this.plansRef}>
 					{!(isPlus || isPremium) && (
 						basicCard(this.isBasicPlanChecked(), this.selectBasicPlan)
 					)}
@@ -291,13 +291,13 @@ class ChoosePlanView extends React.Component {
 				</div>
 				{(selectedPlan === BASIC || selectedPlan === -1) && (
 					// Change to route to next page
-					<button className="ChoosePlanView__searchCTAButton" type="button">{t('ghostery_browser_hub_onboarding_next_or_start_trial')}</button>
+					<button className="Step4_ChoosePlanView__searchCTAButton" type="button">{t('ghostery_browser_hub_onboarding_next_or_start_trial')}</button>
 				)}
 				{selectedPlan === PREMIUM && (
-					<a className="ChoosePlanView__searchCTAButton" href={premiumCheckoutLink} target="_blank" rel="noreferrer">{t('ghostery_browser_hub_onboarding_start_trial')}</a>
+					<a className="Step4_ChoosePlanView__searchCTAButton" href={premiumCheckoutLink} target="_blank" rel="noreferrer">{t('ghostery_browser_hub_onboarding_start_trial')}</a>
 				)}
 				{selectedPlan === PLUS && (
-					<a className="ChoosePlanView__searchCTAButton" href={plusCheckoutLink} target="_blank" rel="noreferrer">{t('ghostery_browser_hub_onboarding_start_trial')}</a>
+					<a className="Step4_ChoosePlanView__searchCTAButton" href={plusCheckoutLink} target="_blank" rel="noreferrer">{t('ghostery_browser_hub_onboarding_start_trial')}</a>
 				)}
 			</div>
 		);
@@ -305,7 +305,7 @@ class ChoosePlanView extends React.Component {
 }
 
 // PropTypes ensure we pass required props of the correct type
-ChoosePlanView.propTypes = {
+Step4_ChoosePlanView.propTypes = {
 	user: PropTypes.shape({
 		plusAccess: PropTypes.bool,
 		premiumAccess: PropTypes.bool,
@@ -314,11 +314,11 @@ ChoosePlanView.propTypes = {
 };
 
 // Default props used in the Plus View
-ChoosePlanView.defaultProps = {
+Step4_ChoosePlanView.defaultProps = {
 	user: {
 		plusAccess: false,
 		premiumAccess: false,
 	},
 };
 
-export default ChoosePlanView;
+export default Step4_ChoosePlanView;

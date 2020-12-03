@@ -11,6 +11,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0
  */
 
-import WelcomeView from './WelcomeView';
+import Step0_WelcomeView from './Step0_WelcomeView';
 
-export default WelcomeView;
+export default Step0_WelcomeView;

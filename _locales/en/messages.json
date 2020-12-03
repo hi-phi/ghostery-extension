@@ -1818,6 +1818,15 @@
 	"ghostery_browser_hub_onboarding_choose_an_option": {
 		"message": "Choose an option"
 	},
+	"ghostery_browser_hub_onboarding_yay_youre_all_set": {
+		"message": "Yay! You're all set."
+	},
+	"ghostery_browser_hub_onboarding_start_browsing_the_web_with": {
+		"message": "Start browsing the web with"
+	},
+	"ghostery_browser_hub_onboarding_lets_search": {
+		"message": "Let's search"
+	},
 	"enable_when_paused": {
 		"message": "To use this function, Resume Ghostery."
 	},

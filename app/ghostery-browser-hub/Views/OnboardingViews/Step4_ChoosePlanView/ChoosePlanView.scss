@@ -1,17 +1,17 @@
-.PlanView__yourPrivacyPlan {
+.ChoosePlanView__yourPrivacyPlan {
 	margin: auto;
 	font-size: 24px;
 	display: flex;
 	justify-content: center;
 }
 
-.PlanView__subtitle {
+.ChoosePlanView__subtitle {
 	margin-top: 12px;
 	display: flex;
 	justify-content: center;
 	font-size: 18px;
 }
-.PlanView__searchPromoContainer {
+.ChoosePlanView__searchPromoContainer {
 	width: 354px;
 	height: 381px;
 	margin: 48px auto 0 auto;
@@ -19,14 +19,14 @@
 	border: solid 4px #00aef0;
 }
 
-.PlanView__searchLogo {
+.ChoosePlanView__searchLogo {
 	height: 37px;
 	width: 193px;
 	margin: 65px auto 0 auto;
-	background-image: url('/app/images/hub/PlanView/search.svg');
+	background-image: url('/app/images/hub/ChoosePlanView/search.svg');
 }
 
-.PlanView__adFree {
+.ChoosePlanView__adFree {
 	margin: 16px auto 0 auto;
 	color: #b8860b;
 	font-size: 18px;
@@ -36,14 +36,14 @@
 	text-align: center;
 }
 
-.PlanView__adFreePromo {
+.ChoosePlanView__adFreePromo {
 	margin: auto;
 	font-size: 18px;
 	line-height: 32px;
 	text-align: center;
 }
 
-.PlanView__adFreePromoDescription {
+.ChoosePlanView__adFreePromoDescription {
 	margin: 16px auto 0 auto;
 	height: 88px;
 	width: 250px;
@@ -53,7 +53,7 @@
 	color: #4a4a4a;
 }
 
-.PlanView__searchCTAButton {
+.ChoosePlanView__searchCTAButton {
 	display: flex;
 	justify-content: center;
 	margin: 48px auto 48px auto;
@@ -83,7 +83,7 @@
 	cursor: pointer;
 }
 
-.PlanView__seeAllPlans {
+.ChoosePlanView__seeAllPlans {
 	margin-top: 48px;
 	display: flex;
 	justify-content: center;
@@ -93,14 +93,14 @@
 	cursor: pointer;
 }
 
-.PlanView__plansContainer {
+.ChoosePlanView__plansContainer {
 	margin-top: 100px;
 	display: flex;
 	justify-content: center;
 	flex-wrap: wrap;
 }
 
-.PlanView__arrowDown {
+.ChoosePlanView__arrowDown {
 	margin: 15px auto 0 auto;
 	height: 12px;
 	width: 12px;
@@ -110,13 +110,13 @@
 	cursor: pointer;
 }
 
-.PlanView__cardOuter {
+.ChoosePlanView__cardOuter {
 	flex-shrink: 3;
 	padding: 0 20px;
 }
 
 // Clean up unused CSS
-.PlanView__card {
+.ChoosePlanView__card {
 	height: 670px;
 	box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.5);
 	margin-bottom: rem-calc(40);
@@ -227,7 +227,7 @@
 	}
 }
 
-.PlanView__price {
+.ChoosePlanView__price {
 	min-height: 85px;
 	margin-bottom: rem-calc(20);
 	&-blue {
@@ -264,7 +264,7 @@
 }
 
 
-.PlanView__valuePropList {
+.ChoosePlanView__valuePropList {
 	margin: auto;
 	width: 174px;
 
@@ -272,7 +272,7 @@
 		width: 145px;
 	}
 }
-.PlanView__cardSubCopy {
+.ChoosePlanView__cardSubCopy {
 	display: flex;
 	justify-content: flex-start;
 	margin-bottom: 5px;
@@ -295,7 +295,7 @@
 	}
 }
 
-.PlanView__radioButtonContainer {
+.ChoosePlanView__radioButtonContainer {
 	padding: 11px;
 	margin-bottom: 84px;
 	display: flex;

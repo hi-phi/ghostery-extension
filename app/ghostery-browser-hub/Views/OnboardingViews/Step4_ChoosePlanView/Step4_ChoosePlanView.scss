@@ -115,7 +115,6 @@
 	padding: 0 20px;
 }
 
-// Clean up unused CSS
 .Step4_ChoosePlanView__card {
 	height: 670px;
 	box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.5);
@@ -136,7 +135,6 @@
 			margin-left: -1px;
 		}
 	}
-
 	h2 {
 		color: $tundora;
 		font-family: "Roboto Condensed";
@@ -151,17 +149,6 @@
 	}
 	&-sub-header {
 		margin-bottom: rem-calc(15);
-	}
-	&-sub-copy {
-		display: flex;
-		align-items: center;
-		font-size: rem-calc(12);
-		margin-bottom: 8px;
-		text-align: left;
-		padding-left: rem-calc(35);
-		img {
-			padding-right: 10px;
-		}
 	}
 	.ghostery-free-image-container {
 		margin: -3px 0 0 -4px;
@@ -210,18 +197,6 @@
 		height: 85px;
 		background-image: linear-gradient(to right, rgba(113,1,116,.25), rgba(90,37,142,.25) 18%, rgba(42,110,194,.25) 57%, rgba(12,156,227,.25) 86%, rgba(0,174,240,.25));
 	}
-	.button {
-		margin-top: 10px;
-		margin-bottom: rem-calc(20);
-		text-transform: none;
-		height: 38px;
-		line-height: 22px;
-		&.already-protected {
-			@include breakpoint($medium-large-breakpoint down) {
-				margin-top: 45px;
-			}
-		}
-	}
 	.card-sub-header {
 		font-size: 14px;
 	}
@@ -251,14 +226,6 @@
 		}
 		&.sub-text {
 			font-weight: 500;
-		}
-	}
-	.price-per-year {
-		position: relative;
-		width: 100%;
-		p {
-			position: absolute;
-			width: 100%;
 		}
 	}
 }

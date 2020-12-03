@@ -11,6 +11,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0
  */
 
-import ChoosePlanView from './Step4_ChoosePlanView';
+import Step4_ChoosePlanView from './Step4_ChoosePlanView';
 
-export default ChoosePlanView;
+export default Step4_ChoosePlanView;

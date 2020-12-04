@@ -266,8 +266,8 @@ class Step4_ChoosePlanView extends React.Component {
 		const isPlus = (user && user.plusAccess) || false;
 		const isPremium = (user && user.premiumAccess) || false;
 
-		const plusCheckoutLink = `${globals.CHECKOUT_BASE_URL}/plus`;
-		const premiumCheckoutLink = `${globals.CHECKOUT_BASE_URL}/premium`;
+		const plusCheckoutLink = `${globals.CHECKOUT_BASE_URL}/en/plus`;
+		const premiumCheckoutLink = `${globals.CHECKOUT_BASE_URL}/en/premium`;
 		return (
 			<div>
 				<div className="Step4_ChoosePlanView__yourPrivacyPlan">{this.renderTitleText()}</div>

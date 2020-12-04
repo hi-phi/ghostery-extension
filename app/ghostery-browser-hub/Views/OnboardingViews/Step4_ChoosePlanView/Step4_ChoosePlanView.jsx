@@ -291,13 +291,13 @@ class Step4_ChoosePlanView extends React.Component {
 				</div>
 				{(selectedPlan === BASIC || selectedPlan === -1) && (
 					// Change to route to next page
-					<button className="Step4_ChoosePlanView__searchCTAButton" type="button">{t('ghostery_browser_hub_onboarding_next_or_start_trial')}</button>
+					<button className="Step4_ChoosePlanView__searchCTAButton" type="button">{t('next')}</button>
 				)}
 				{selectedPlan === PREMIUM && (
-					<a className="Step4_ChoosePlanView__searchCTAButton" href={premiumCheckoutLink} target="_blank" rel="noreferrer">{t('ghostery_browser_hub_onboarding_start_trial')}</a>
+					<a className="Step4_ChoosePlanView__searchCTAButton" href={premiumCheckoutLink} target="_blank" rel="noreferrer">{t('next')}</a>
 				)}
 				{selectedPlan === PLUS && (
-					<a className="Step4_ChoosePlanView__searchCTAButton" href={plusCheckoutLink} target="_blank" rel="noreferrer">{t('ghostery_browser_hub_onboarding_start_trial')}</a>
+					<a className="Step4_ChoosePlanView__searchCTAButton" href={plusCheckoutLink} target="_blank" rel="noreferrer">{t('next')}</a>
 				)}
 			</div>
 		);

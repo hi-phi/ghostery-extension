@@ -61,14 +61,21 @@ const renderFAQListItem = (icon, label, description) => (
 	</div>
 );
 
-const renderSkipLink = () => (
-	<div className="row align-center-middle">
-		<div className="columns small-10 medium-5" />
-		<div className="columns small-10 medium-5">
-			<div className="Step1_CreateAccountView__skip">{t('ghostery_browser_hub_onboarding_skip')}</div>
+const renderSkipLink = (show) => {
+	const skipLinkClasses = ClassNames(
+		'row',
+		'align-center-middle',
+		{ visibility: show ? 'visible' : 'hidden'},
+	);
+	return (
+		<div className={skipLinkClasses}>
+			<div className="columns small-10 medium-5" />
+			<div className="columns small-10 medium-5">
+				<div className="Step1_CreateAccountView__skip">{t('ghostery_browser_hub_onboarding_skip')}</div>
+			</div>
 		</div>
-	</div>
-);
+	);
+};
 
 /**
  * A Functional React component for rendering the Browser Create Account View
@@ -76,8 +83,26 @@ const renderSkipLink = () => (
  * @memberof GhosteryBrowserHubViews
  */
 const Step1_CreateAccountView = (props) => {
-	const { user } = props;
+	// Pulling in the steps prop also to see what step we're in and set text conditionally
+	const { user, step } = props;
 	const email = user && user.email;
+
+	// Checking the index in the component view array to determine copy where 0 is
+	// the default view, and 1 is the alternate view when the user comes from Step 4
+	let subtitleText;
+	let showSkipOption;
+	switch (step.componentViewIndex) {
+		case 0:
+			subtitleText = t('ghostery_browser_hub_onboarding_sync_settings');
+			showSkipOption = true;
+			break;
+		case 1:
+			subtitleText = t('ghostery_browser_hub_onboarding_sync_settings_alt');
+			showSkipOption = false;
+			break;
+		default:
+			break;
+	}
 
 	const [expanded, setExpanded] = useState(false);
 	const [view, setView] = useState(CREATE_ACCOUNT);
@@ -114,7 +139,7 @@ const Step1_CreateAccountView = (props) => {
 			{view === SIGN_IN && (
 				<div className="Step1_CreateAccountView__title">{t('sign_in')}</div>
 			)}
-			<div className="Step1_CreateAccountView__subtitle">{ t('ghostery_browser_hub_onboarding_sync_settings') }</div>
+			<div className="Step1_CreateAccountView__subtitle">{ subtitleText }</div>
 			<div className="row align-center-middle">
 				{view === CREATE_ACCOUNT && (
 					<div className="Step1_CreateAccountView__alreadyHaveAccount columns small-12 medium-5" onClick={() => setView(SIGN_IN)}>{t('ghostery_browser_hub_onboarding_already_have_account')}</div>
@@ -128,7 +153,7 @@ const Step1_CreateAccountView = (props) => {
 				<Fragment>
 					{/* eslint-disable-next-line react/jsx-pascal-case */}
 					<Step1_CreateAccountForm />
-					{renderSkipLink()}
+					{renderSkipLink(showSkipOption)}
 					<div className="Step1_CreateAccountView__learnMoreContainer" onClick={handleFAQLearnMoreClick}>
 						<div className="Step1_CreateAccountView__learnMore">{t('ghostery_browser_hub_onboarding_we_take_your_privacy_very_seriously')}</div>
 					</div>
@@ -150,7 +175,7 @@ const Step1_CreateAccountView = (props) => {
 				<Fragment>
 					{/* eslint-disable-next-line react/jsx-pascal-case */}
 					<Step1_LogInForm />
-					{renderSkipLink()}
+					{renderSkipLink(showSkipOption)}
 				</Fragment>
 			)}
 		</div>
